@@ -8,16 +8,15 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
+    // GUI
     var cluesLabel: UILabel!
     var answersLabel: UILabel!
     var currentAnswer: UITextField!
     var scoreLabel: UILabel!
     var letterButtons = [UIButton]()
-    
+    // gameplay
     var activatedButtons = [UIButton]()
     var solutions = [String]()
-    
     var score = 0 {
         didSet {
             scoreLabel.text = "Score: \(score)"
@@ -71,7 +70,7 @@ class ViewController: UIViewController {
         clear.setTitle("Clear", for: .normal)
         clear.addTarget(self, action: #selector(clearTapped), for: .touchUpInside)
         view.addSubview(clear)
-        
+        // input buttons view
         let buttonsView = UIView()
         buttonsView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonsView)
@@ -108,9 +107,9 @@ class ViewController: UIViewController {
             buttonsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             buttonsView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20)
         ])
-        
-        let width = 150
-        let height = 80
+        // buttons
+        let buttonWidth = 150
+        let buttonHeight = 80
         
         for row in 0..<4 {
             for colume in 0..<5 {
@@ -122,11 +121,12 @@ class ViewController: UIViewController {
                 letterButton.layer.borderWidth = 2
                 letterButton.layer.borderColor = UIColor.systemGray5.cgColor
                 letterButton.layer.cornerRadius = 10
-                
-                let frame = CGRect(x: colume * width, y: row * height, width: width - 10, height: height - 10)
+                // setup buttons frame
+                let frame = CGRect(x: colume * buttonWidth, y: row * buttonHeight, width: buttonWidth - 10, height: buttonHeight - 10)
                 letterButton.frame = frame
                 
                 buttonsView.addSubview(letterButton)
+                // add letterButton to letterButtons array
                 letterButtons.append(letterButton)
             }
         }
@@ -137,13 +137,12 @@ class ViewController: UIViewController {
         // run game
         loadLevel()
     }
+    // let button title be on the textField
     @objc func letterTapped(_ sender: UIButton) {
         guard let buttonTitle = sender.titleLabel?.text else { return }
         currentAnswer.text = currentAnswer.text?.appending(buttonTitle)
+        // save buttons to activatedButtons, use in clearTapped method
         activatedButtons.append(sender)
-//        UIView.animate(withDuration: 0.5, delay: 0, options: []) {
-//            sender.alpha = 0.0
-//        }
         sender.isHidden = true
     }
     @objc func submitTapped(_ sender: UIButton) {
@@ -164,12 +163,7 @@ class ViewController: UIViewController {
         // 清除textField
         currentAnswer.text = ""
         score += 1
-        // 原本計分機制
-//            if score % 7 == 0 {
-//                let ac = UIAlertController(title: "Well done!", message: "Are you ready for the next level?", preferredStyle: .alert)
-//                ac.addAction(UIAlertAction(title: "Let's go!", style: .default, handler: levelUp))
-//                present(ac, animated: true)
-//            }
+
         if answersLabel.text?.contains("letters") == false {
             let ac = UIAlertController(title: "Well done!", message: "Are you ready for the next level?", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Let's go!", style: .default, handler: levelUp))
@@ -181,9 +175,6 @@ class ViewController: UIViewController {
         currentAnswer.text = ""
         for button in activatedButtons {
             button.isHidden = false
-//            UIView.animate(withDuration: 0.5, delay: 0, options: []) {
-//                button.alpha = 1.0
-//            }
         }
         activatedButtons.removeAll()
     }
